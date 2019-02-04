@@ -1,0 +1,10 @@
+{% extends "cookbook/base.html" %}
+
+{% block content %}
+	<form enctype="multipart/form-data" action ="{% url 'przepis' %}" method ="post">
+	{% csrf_token %}
+	{{ form.as_p }}
+	{{ skladnik_formSet.as_table }}<br>
+	<input id = "save_ingredients" type="submit" value="Zapisz" />
+	</form>
+{% endblock content %}

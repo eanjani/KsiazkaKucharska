@@ -1,0 +1,9 @@
+{% extends "cookbook/base.html" %}
+
+{% block content %}
+<br /><div>Szukałeś: <b>{{ query }} </b>. Znaleziono {{ results.count }} wyników</div><br/>
+{% for przepis in results %}
+	{% ifchanged przepis.nazwa.0|lower %}<h2>{{przepis.nazwa.0}}</h2>{% endifchanged %}
+	<p><a href="{% url 'App.views.post_detail' pk=przepis.pk %}">{{ przepis.nazwa}}</a></p>
+{% endfor %}
+{% endblock content %}

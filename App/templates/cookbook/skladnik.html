@@ -1,0 +1,9 @@
+{% extends "cookbook/base.html" %}
+
+{% block content %}
+	<form action ="{% url 'skladnik' %}" method ="post">
+	{% csrf_token %}
+	{{ form.as_p }}
+	<input id = "save_ingredients" type="submit" value="Zapisz" />
+	</form>
+{% endblock content %}

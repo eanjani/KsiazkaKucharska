@@ -1,0 +1,11 @@
+{% extends "cookbook/base.html" %}
+
+{% block content %}
+
+
+	{% for przepis in przepisy %}
+		{% ifchanged przepis.nazwa.0|lower %}<h2>{{przepis.nazwa.0}}</h2>{% endifchanged %}
+  	    <p><a href="{%url 'App.views.post_detail' pk=przepis.pk %}">{{ przepis.nazwa}}</a></p>
+    {% endfor %}
+
+{% endblock content %}

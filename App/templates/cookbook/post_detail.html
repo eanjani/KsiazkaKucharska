@@ -1,0 +1,161 @@
+{% extends 'cookbook/base.html' %}
+{% block content %}
+{% load app_filters %}
+
+<div id="tooltip" class="alert alert-info"  role="alert" style="position: fixed; float: left;">
+  <form action="addtag" method="post">
+    {% csrf_token %}
+    Name selected text: <input type="text" id='phrase' name="phrase" type="text"></input>
+    Tags to text: <input type="text" id = 'tag' name="tag" type="text"></input>
+    <input type="submit" id='btn2' value="Send" />
+  </form>
+</div>
+
+{% if phrase and tag %}
+<div class="alert alert-success" id="success-alert" role="alert">dodanie słowa <b>{{phrase}}</b> i tagu:<b>{{tag}}</b> zakończone sukcesem!</div>
+{% endif %}
+
+
+<script type="text/javascript">
+
+       var myBtn = document.getElementById('btn2');
+
+        myBtn.addEventListener('click', function(event) {
+          txt = document.getElementById('phrase').value
+          //addToList();
+          $("#tooltip").hide();
+          styleWord(document.getElementById('longtext'), txt)
+        });
+
+        var styleWord = function(target, word){
+              var html = target.innerHTML;
+              html = html.replace(new RegExp(word, "g"), '<b>'+word+'</b>');
+              target.innerHTML = html;
+        };
+
+        function addToList()
+        {
+          var ul = document.getElementById("names");
+          var li = document.createElement("li");
+          li.appendChild(document.createTextNode("Nazwa: "+document.getElementById('phrase').value));
+          li.appendChild(document.createTextNode(" Wartość: "+document.getElementById('tag').value));
+          ul.appendChild(li);
+        }
+
+        $(document).ready(function (){
+           $("#success-alert").fadeTo(2000, 500).slideUp(500, function(){
+            $("#success-alert").slideUp(500);
+            });
+           $("#tooltip").hide();
+           $('#longtext').mouseup(function (e){
+               $("#tooltip").show();
+               document.getElementById('phrase').value=getSelectionText();
+           })
+        });
+
+        function getSelectionText() {
+            var text = "";
+            if (window.getSelection) {
+                text = window.getSelection().toString();
+            } else if (document.selection && document.selection.type != "Control") {
+                text = document.selection.createRange().text;
+            }
+            return text;
+        }
+</script>
+
+
+	<div style="display:inline-block;">
+		<h3>{{ przepis.nazwa }}</h3>
+		<h4>Kategoria {{przepis.kategoria}}</h4>
+
+		<!--<p><b>Ilość porcji:</b> {{ przepis.ilosc_porcji }}</p> 
+
+
+	<form action="change_ingredients" method="post">
+		{% csrf_token %}
+		Ilość porcji:<input name="ilosc" id="ilosc" type="number"  min="1" max="100" value="1" >
+		<input type="submit" value="wyslij" data-toggle="modal" href="#myModal2">
+	</form> -->
+
+	<form action="classify" method="post">
+		{% csrf_token %}
+		<input type="submit" value="klasyfikuj" data-toggle="modal" href="#myModal1">
+	</form>
+
+  <form action="find_similar" method="post">
+    {% csrf_token %}
+    <input type="submit" value="Znajdź podobne" data-toggle="modal" href="#myModal3">
+  </form>
+
+	{% if result %}
+		<script type="text/javascript">
+		    $(document).ready(function(){ $("#myModal1").modal('show'); }); 
+		</script>
+	{% endif %}
+
+  {% if sklad and value %} 
+    <script type="text/javascript">
+        $(document).ready(function(){ $("#myModal2").modal('show'); }); 
+    </script>
+  {% endif %}
+
+  {% if objects %}
+      <script type = "text/javascript">
+        $(document).ready(function(){ $("#myModal3").modal('show'); });
+      </script>
+  {% endif %}
+
+  <div id='longtext'>
+    {% autoescape off %}
+		<p><b>Przygotowanie:</b> {{ przepis.przygotowanie|boldText:taggedWords|linebreaks|safe}}</p>
+    {% endautoescape %}
+  </div>
+	</div>
+
+<!-- Modal -->
+<div id="myModal1" class="modal fade" role="dialog">
+  <div class="modal-dialog modal-sm">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Klasyfikacja</h4>
+      </div>
+      <div class="modal-body">
+        <p>Przepis zaklasyfikowano jako: <b>{{ result }}</b></p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div id="myModal3" class="modal fade" role="dialog">
+  <div class="modal-dialog modal-sm">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Przepisy podobne</h4>
+      </div>
+      <div class="modal-body">
+        {% for item in objects %}
+        <p><a href="{% url 'App.views.post_detail' pk=item.id %}">{{ item }}</a></p>
+        {% endfor %}
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<ul id="names">
+</ul>
+{% endblock content %}

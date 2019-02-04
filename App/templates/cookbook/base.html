@@ -1,0 +1,86 @@
+{% load staticfiles %}
+<html>
+    <head>
+        <title>Książka kucharska - Twoje przepisy</title>
+		<link href='https://fonts.googleapis.com/css?family=Lobster' rel='stylesheet' type='text/css'>
+        <link href="{% static 'cookbook.css' %}" rel='stylesheet' type='text/css' >
+        <link href="{% static 'bootstrap-3.3.5-dist/css/bootstrap.min.css' %}" rel="stylesheet" media="screen">
+    </head>
+    <body>
+    	<script src="{% static 'js/jquery-2.1.4.js' %}"></script>
+    	<!--<script src="{% static 'js/jquery.min.js' %}"></script>-->
+    	<script src="{% static 'bootstrap-3.3.5-dist/js/bootstrap.min.js' %}"></script>
+
+    	<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+		  <div class="container-fluid">
+		    <!-- Grupowanie "marki" i przycisku rozwijania mobilnego menu -->
+		    <div class="navbar-header">
+		      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+		        <span class="sr-only">Rozwiń nawigację</span>
+		        <span class="icon-bar"></span>
+		        <span class="icon-bar"></span>
+		        <span class="icon-bar"></span>
+		      </button>
+		      <a class="navbar-brand" href="#">Smart Cookbook</a>
+		    </div>
+
+		    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+		      <ul class="nav navbar-nav">
+		        <li class="active">
+		        <li><a href="http://127.0.0.1:8000/">Strona główna</a></li>
+		        <li><a href="http://127.0.0.1:8000/skladnik/">Nowy składnik</a></li>
+		        <li><a href="http://127.0.0.1:8000/przepis/">Nowy przepis</a></li>
+		        <li><a href="http://127.0.0.1:8000/admin/">Panel administracyjny</a></li>
+		        <li><a href="" data-toggle="modal" data-target="#myModal">Wyszukiwanie zaawansowane</a></li>
+		      </ul>
+		      <ul class="nav navbar-nav navbar-right">
+		       <form method="get" action="/search_results/" class="navbar-form navbar-left" role="search">
+		        <div class="form-group">
+		          <input type="text" class="form-control" name="q" placeholder="Szukaj">
+		        </div>
+		        <button type="submit" class="btn btn-default">Wyślij</button>
+		      </form>
+		      </ul>
+		    </div><!-- /.navbar-collapse -->
+		  </div><!-- /.container-fluid -->
+		</nav>
+		<div class="container">
+			<div class="row">
+				<div class="col">
+					 {% block content %}
+					{% endblock %}
+				</div>
+			</div>
+		</div>
+
+		<!-- {Wyszukiwanie zaawansowane} Modal window-->
+		<div id="myModal" class="modal fade" role="dialog">
+  			<div class="modal-dialog">
+
+    		<!-- Modal content-->
+    		<div class="modal-content">
+      			<div class="modal-header">
+        			<button type="button" class="close" data-dismiss="modal">&times;</button>
+        			<h4 class="modal-title">Wyszukiwanie zaawansowane</h4>
+      			</div>
+      			<div>
+        			 <!--szukanie po: nazwie, kategorii, składnikach, słowach w opisie przygotowania-->
+
+        			<form method="get" action="/detailedsearch_results/" class="navbar-form navbar-left" role="search">
+				        <div class="form-group">
+				          <p>Nazwa: </p><input type="text" class="form-control" name="n" placeholder="nazwa"><br><br>
+				          <p>Kategoria: </p>
+				          	<input type="checkbox" name="category" value="Ciasta">Ciasta <input type="checkbox" name="category" value="Desery">Desery<br><br>
+							<p>Składniki: </p><input type="text" class="form-control" name="s" placeholder="wyrazy oddzielone ','"><br><br>
+							<p>Opis przygotowania zawiera: </p><input type="text" class="form-control" name="p" placeholder="wyrazy oddzielone ','"><br><br>
+							<button type="submit" class="btn btn-default">Wyślij</button>
+				        </div>
+			      	</form>
+      			</div>
+      			<div class="modal-footer">
+      			</div>
+    		</div>
+  			</div>
+		</div>
+</body>
+</html>
